@@ -14,8 +14,7 @@ namespace QLIE_Extract
 	//* THashFilePack_Create *
 	//************************
 	static DWORD g_fnTHashFilePack_CreateRet = NULL;
-	__declspec(naked)
-		LPTPack_PackEntry __stdcall RawTHashFilePack_Create(LPTPack_InitTable pFileList, CHAR cUn0, LPTPack_Buffer pKeyFile, CHAR cUn1, CHAR cUn2, PCWCHAR lpPackName)
+	__declspec(naked) LPTPack_PackEntry __stdcall RawTHashFilePack_Create(LPTPack_InitTable pFileList, CHAR cUn0, LPTPack_Buffer pKeyFile, CHAR cUn1, CHAR cUn2, PCWCHAR lpPackName)
 	{
 		__asm
 		{
@@ -39,8 +38,7 @@ namespace QLIE_Extract
 		return packEntry;
 	}
 
-	__declspec(naked)
-		VOID __stdcall THashFilePack_Create_CallCVT()
+	__declspec(naked) VOID __stdcall THashFilePack_Create_CallCVT()
 	{
 		__asm
 		{
@@ -59,8 +57,7 @@ namespace QLIE_Extract
 	//*  THashFilePack_Get  *
 	//************************
 	static DWORD g_fnTFilePack_GetRaw = NULL;
-	__declspec(naked)
-		LPTPack_Buffer __fastcall RawTFilePack_Get(LPTPack_ResIndex pResIndex, SIZE_T nSequence)
+	__declspec(naked) LPTPack_Buffer __fastcall RawTFilePack_Get(LPTPack_ResIndex pResIndex, SIZE_T nSequence)
 	{
 		__asm
 		{
@@ -75,8 +72,7 @@ namespace QLIE_Extract
 	//*     TObject_Free     *
 	//************************
 	static DWORD g_fnTObject_FreeRaw = NULL;
-	__declspec(naked)
-		LPTPack_Buffer __fastcall RawTObject_Free(LPTPack_Buffer pTBuffer)
+	__declspec(naked) LPTPack_Buffer __fastcall RawTObject_Free(LPTPack_Buffer pTBuffer)
 	{
 		__asm
 		{
@@ -194,11 +190,9 @@ namespace QLIE_Extract
 			{
 				TDA::ConsoleX::PutConsoleW(L"Extract:%s\n", lpResName);
 			}
-			
+
 			QLIE_Extract::TObject_Free(pTBuffer);
 		}
-
-
 
 		return TRUE;
 	}
