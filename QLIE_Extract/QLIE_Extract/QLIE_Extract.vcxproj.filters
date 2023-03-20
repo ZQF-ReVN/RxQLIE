@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="QLIE_Extract">
+      <UniqueIdentifier>{bb2eaa1b-a7d5-4a64-b347-4e9a1fb20979}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="QLIE_Extract.cpp">
+      <Filter>QLIE_Extract</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="QLIE_Extract.h">
+      <Filter>QLIE_Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="QLIE_Extract_Struct.h">
+      <Filter>QLIE_Extract</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
