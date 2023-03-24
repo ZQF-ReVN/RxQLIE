@@ -1,6 +1,3 @@
-#define __DetoursX__
-#ifdef __DetoursX__
-
 #pragma once
 #include <Windows.h>
 
@@ -20,5 +17,3 @@ namespace TDA
 	};
 
 }
-
-#endif

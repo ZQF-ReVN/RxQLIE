@@ -9,9 +9,8 @@ namespace TDA
 	bool FileX::SaveFileViaPath(wchar_t* pPath, void* pBuffer, size_t nSize)
 	{
 		std::wstring path = GetCurrentDirectoryFolder_RETW() + pPath;
-		std::wstring folder = PathRemoveFileName_RET(path);
 
-		SHCreateDirectoryExW(NULL, folder.c_str(), NULL);
+		SHCreateDirectoryExW(NULL, PathRemoveFileName_RET(path).c_str(), NULL);
 
 		HANDLE hFile = CreateFileW(pPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hFile == INVALID_HANDLE_VALUE) return false;
@@ -22,34 +21,38 @@ namespace TDA
 
 		return isWritten;
 	}
+
+
 	size_t FileX::GetCurrentDirectoryFolder(char* pPath)
 	{
 		size_t sz = GetCurrentDirectoryA(MAX_PATH, pPath);
-		strcat_s(pPath, MAX_PATH, "\\");
-		return sz;
+		memcpy(pPath + sz, "\\", 1);
+		return ++sz;
 	}
 
 	size_t FileX::GetCurrentDirectoryFolder(wchar_t* pPath)
 	{
 		size_t sz = GetCurrentDirectoryW(MAX_PATH, pPath);
-		wcscat_s(pPath, MAX_PATH, L"\\");
-		return sz;
+		memcpy(pPath + sz, L"\\", 2);
+		return ++sz;
 	}
 
 	size_t FileX::GetCurrentDirectoryFolder(std::string& msPath)
 	{
+		size_t len = 0;
 		msPath.resize(MAX_PATH);
-		msPath.resize(GetCurrentDirectoryA(MAX_PATH, const_cast<char*>(msPath.data())));
-		msPath.append("\\");
-		return msPath.size();
+		len = GetCurrentDirectoryFolder(const_cast<char*>(msPath.data()));
+		msPath.resize(len);
+		return len;
 	}
 
 	size_t FileX::GetCurrentDirectoryFolder(std::wstring& wsPath)
 	{
+		size_t len = 0;
 		wsPath.resize(MAX_PATH);
-		wsPath.resize(GetCurrentDirectoryW(MAX_PATH, const_cast<wchar_t*>(wsPath.data())));
-		wsPath.append(L"\\");
-		return wsPath.size();
+		len = GetCurrentDirectoryFolder(const_cast<wchar_t*>(wsPath.data()));
+		wsPath.resize(len);
+		return len;
 	}
 
 	std::string FileX::GetCurrentDirectoryFolder_RETA()
@@ -67,37 +70,12 @@ namespace TDA
 	}
 
 
-
-	void FileX::BackSlash(const char* pPath, std::string& msPath)
-	{
-		msPath = pPath;
-		BackSlash(const_cast<char*>(msPath.data()));
-	}
-
-	void FileX::BackSlash(const wchar_t* pPath, std::wstring& wsPath)
-	{
-		wsPath = pPath;
-		BackSlash(const_cast<wchar_t*>(wsPath.data()));
-	}
-
-	std::string FileX::BackSlash_RET(const char* pPath)
-	{
-		std::string msPath = pPath;
-		BackSlash(const_cast<char*>(msPath.data()));
-		return msPath;
-	}
-
-	std::wstring FileX::BackSlash_RET(const wchar_t* pPath)
-	{
-		std::wstring wsPath = pPath;
-		BackSlash(const_cast<wchar_t*>(wsPath.data()));
-		return wsPath;
-	}
-
 	void FileX::BackSlash(char* pPath)
 	{
 		for (size_t ite = 0; pPath[ite]; ite++)
 		{
+			if ((uint8_t)pPath[ite] > 0x7F) { ite++; continue; }
+
 			switch (pPath[ite])
 			{
 			case '/':
@@ -126,6 +104,31 @@ namespace TDA
 		}
 	}
 
+	void FileX::BackSlash(const char* pPath, std::string& msPath)
+	{
+		msPath = pPath;
+		BackSlash(const_cast<char*>(msPath.data()));
+	}
+
+	void FileX::BackSlash(const wchar_t* pPath, std::wstring& wsPath)
+	{
+		wsPath = pPath;
+		BackSlash(const_cast<wchar_t*>(wsPath.data()));
+	}
+
+	std::string FileX::BackSlash_RET(const char* pPath)
+	{
+		std::string msPath = pPath;
+		BackSlash(const_cast<char*>(msPath.data()));
+		return msPath;
+	}
+
+	std::wstring FileX::BackSlash_RET(const wchar_t* pPath)
+	{
+		std::wstring wsPath = pPath;
+		BackSlash(const_cast<wchar_t*>(wsPath.data()));
+		return wsPath;
+	}
 
 
 	bool FileX::PathRemoveFileName(std::string& msPath, std::string& msRemoved)
@@ -159,25 +162,50 @@ namespace TDA
 	}
 
 
-
-	bool FileX::PathGetFileName(std::string& msPath, std::string& msFileName)
+	size_t FileX::PathGetFileName(char* pPath)
 	{
-		size_t position = msPath.find_last_of('\\');
-		if (position == std::string::npos) return false;
+		//StrLen
+		size_t len = 0;
+		while (pPath[++len]);
 
-		msFileName = msPath.substr(position + 1);
+		for (size_t iteChar = len; iteChar > 0; iteChar--)
+		{
+			if (pPath[iteChar - 1] != '\\') continue;
+			len -= iteChar;
+			memcpy(pPath, pPath + iteChar, len + 1);
+			return len;
+		}
 
-		return true;
+		return 0;
 	}
 
-	bool FileX::PathGetFileName(std::wstring& wsPath, std::wstring& wsFileName)
+	size_t FileX::PathGetFileName(wchar_t* pPath)
 	{
-		size_t position = wsPath.find_last_of('\\');
-		if (position == std::string::npos) return false;
+		//StrLen
+		size_t len = 0;
+		while (pPath[++len]);
 
-		wsFileName = wsPath.substr(position + 1);
+		for (size_t iteChar = len; iteChar > 0; iteChar--)
+		{
+			if (pPath[iteChar - 1] != L'\\') continue;
+			len -= iteChar;
+			memcpy(pPath, pPath + iteChar, (len + 1) * 2);
+			return len;
+		}
 
-		return true;
+		return 0;
+	}
+
+	void FileX::PathGetFileName(std::string& msPath, std::string& msFileName)
+	{
+		msPath.resize(PathGetFileName(const_cast<char*>(msPath.data())));
+		msFileName = msPath;
+	}
+
+	void FileX::PathGetFileName(std::wstring& wsPath, std::wstring& wsFileName)
+	{
+		wsPath.resize(PathGetFileName(const_cast<wchar_t*>(wsPath.data())));
+		wsFileName = wsPath;
 	}
 
 	std::string FileX::PathGetFileName_RET(std::string& msPath)
@@ -193,7 +221,6 @@ namespace TDA
 		PathGetFileName(wsPath, filename);
 		return filename;
 	}
-
 
 
 	std::streamsize FileX::GetFileSize(const wchar_t* wsFile)
@@ -216,6 +243,30 @@ namespace TDA
 		std::streamsize szFile = ifsFile.tellg();
 
 		return szFile;
+	}
+
+	std::streamsize FileX::GetFileSize(std::ifstream& ifsFile)
+	{
+		std::streamsize size = 0;
+		std::streampos old = ifsFile.tellg();
+
+		ifsFile.seekg(0, std::ios::end);
+		size = ifsFile.tellg();
+		ifsFile.seekg(old, std::ios::beg);
+
+		return size;
+	}
+
+	std::streamsize FileX::GetFileSize(std::fstream& fsFile)
+	{
+		std::streamsize size = 0;
+		std::streampos old = fsFile.tellg();
+
+		fsFile.seekg(0, std::ios::end);
+		size = fsFile.tellg();
+		fsFile.seekg(old, std::ios::beg);
+
+		return size;
 	}
 }
 

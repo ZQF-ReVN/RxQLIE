@@ -1,7 +1,5 @@
 #include "DetoursX.h"
 
-#ifdef __DetoursX__
-
 #include "../ThirdParty/detours/include/detours.h"
 #pragma comment(lib,"../ThirdParty/detours/lib.X86/detours.lib")
 
@@ -71,12 +69,12 @@ namespace TDA
 		return DetourAttachFunc(&rawCreateFontA, newCreateFontA);
 	}
 
-	//********************
-    //* Hook CreateFontA *
-    //********************
+
+	//****************************
+	//* Hook CreateFontIndirectA *
+	//****************************
 	typedef HFONT(WINAPI* pCreateFontIndirectA)(const LOGFONTA* lplf);
 	pCreateFontIndirectA rawCreateFontIndirectA = CreateFontIndirectA;
-
 
 	HFONT WINAPI newCreateFontIndirectA(LOGFONTA* lplf)
 	{
@@ -94,8 +92,8 @@ namespace TDA
 
 
 	//************************
-    //* Hook CreateWindowExA *
-    //************************
+	//* Hook CreateWindowExA *
+	//************************
 	static LPCSTR g_lpPatchTitle = NULL;
 	static LPCSTR g_lpRawTitle = NULL;
 
@@ -104,7 +102,7 @@ namespace TDA
 
 	HWND WINAPI NewCreateWindowExA
 	(
-		DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, 
+		DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight,
 		HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam
 	)
 	{
@@ -127,5 +125,3 @@ namespace TDA
 		return DetourAttachFunc(&RawCreateWindowExA, NewCreateWindowExA);
 	}
 }
-
-#endif // __DetoursX__
