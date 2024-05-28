@@ -166,30 +166,28 @@ struct ABMP12
 
 ## Comment
 
-QLIE_FilePack_t::Header_t::Info_t::signature // 识别标志字符串，不区分大小写
-QLIE_FilePack_t::Header_t::Cryptor_t::hash_table_size // 如果为0则不读取hash table 或 hash table存储在单独的文件中(.hash) 或 没有hash table(没有hash table则通过一个个文件名对比来查找文件)
-QLIE_FilePack_t::Header_t::Cryptor_t::key_table // 用于解密check_str和文件名
-QLIE_FilePack_t::Header_t::Cryptor_t::check_str // 加密过的字符串，使用key_table解密后和内部的字符串(`8hr48uky,8ugi8ewra4g8d5vbf5hb5s6`)对比，如果不一样则抛出异常
+- QLIE_FilePack_t::Header_t::Info_t::signature // 识别标志字符串，不区分大小写
+- QLIE_FilePack_t::Header_t::Cryptor_t::hash_table_size // 如果为0则不读取hash table 或 hash table存储在单独的文件中(.hash) 或 没有hash table(没有hash table则通过一个个文件名对比来查找文件)
+- QLIE_FilePack_t::Header_t::Cryptor_t::key_table // 用于解密check_str和文件名
+- QLIE_FilePack_t::Header_t::Cryptor_t::check_str // 加密过的字符串，使用key_table解密后和内部的字符串(`8hr48uky,8ugi8ewra4g8d5vbf5hb5s6`)对比，如果不一样则抛出异常
 
 
 
 ## Function
 
-// 004EE0A8 从keyfile(在exe的resources(RCData::RESKEY)里，每个封包也有keyfile文件(pack_keyfile_...key))生成解密表，主要用于解密文件数据
-// 004EE18E 检查signature
-// 004EDE32 通过key_table生成nCryptorKey，主要用于解密check_str和文件名
-// 004EDE52 用nCryptorKey解密check_str
-// 004EDE78 对比解密后的check_str是否等于`8hr48uky,8ugi8ewra4g8d5vbf5hb5s6`
-// 004EDF7E 循环读取每一项文件描述（读取索引表）
-// 004EDF96 读取文件名的同时通过nCryptorKey解密文件
-
-// 004EE754 查找目标文件的索引下标，有hash table则通过hash tabel查找，没有则strcmp
-// 004EDB80 通过下标索引，读取返回对应的MemoryStream
-// 004EDC4C 对原始的文件数据计算校验key并判断是否和存储的校验key一致
-// 004EDC93 判断是否需要解密及解密版本
-// 004EDCC0 判断是否需要解压
-
-// 004F06CF 循环打开封包（最大32个，即最多32个封包，即封包序号最大31）
+- 004EE0A8 从keyfile(在exe的resources(RCData::RESKEY)里，每个封包也有keyfile文件(pack_keyfile_...key))生成解密表，主要用于解密文件数据
+- 004EE18E 检查signature
+- 004EDE32 通过key_table生成nCryptorKey，主要用于解密check_str和文件名
+- 004EDE52 用nCryptorKey解密check_str
+- 004EDE78 对比解密后的check_str是否等于`8hr48uky,8ugi8ewra4g8d5vbf5hb5s6`
+- 004EDF7E 循环读取每一项文件描述（读取索引表）
+- 004EDF96 读取文件名的同时通过nCryptorKey解密文件
+- 004EE754 查找目标文件的索引下标，有hash table则通过hash tabel查找，没有则strcmp
+- 004EDB80 通过下标索引，读取返回对应的MemoryStream
+- 004EDC4C 对原始的文件数据计算校验key并判断是否和存储的校验key一致
+- 004EDC93 判断是否需要解密及解密版本
+- 004EDCC0 判断是否需要解压
+- 004F06CF 循环打开封包（最大32个，即最多32个封包，即封包序号最大31）
 
 
 
