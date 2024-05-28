@@ -23,5 +23,5 @@ f out all pack information and filelist to QLIEFileNameList.txt
 d extract files -> the Sequence see pack information  
 
 # Test
-![0](https://github.com/Dir-A/QLIE_Extract/blob/main/TestImage/test0.png?raw=true)
-![1](https://github.com/Dir-A/QLIE_Extract/blob/main/TestImage/test1.png?raw=true)
+![0](TestImage/test0.png?raw=true)
+![1](TestImage/test1.png?raw=true)
