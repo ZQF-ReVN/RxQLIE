@@ -1,5 +1,7 @@
 ## Structure
 
+### File Structures
+
 ```c
 template<class T>
 struct Str_t
@@ -162,9 +164,365 @@ struct ABMP12
 }
 ```
 
+### Memory Structures
+
+```c
+struct TStream_Vtable
+{
+  void *fnGetSize;
+  void *fnSetSize;
+  void *fnxx;
+  void *fnRead;
+  void *fnWrite;
+  void *fnxxxxx;
+  void *fnSetPos;
+  void *fnxxxxxxx;
+};
+
+struct TStream
+{
+  TStream_Vtable *pVtable;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t un4;
+  uint32_t un5;
+};
+
+struct TMemoryStream
+{
+  TStream_Vtable *pVtable;
+  uint8_t *pData;
+  uint32_t nSize;
+  uint32_t nPos;
+  uint32_t un3;
+  uint32_t un4;
+};
+
+struct TFileStream
+{
+  TStream_Vtable *pVtable;
+  uint32_t hFile;
+  LPWSTR wpFilePath;
+  uint32_t un1;
+};
+
+struct __attribute__((aligned(8))) TFilePack
+{
+  uint8_t gap0[4];
+  THashTable *pPackHashTable;
+  TStream *tsFile;
+  TFilePack_Entry_Info *aFileInfoList;
+  LPCWSTR *aFileNameList;
+  uint32_t nResFileCount;
+  uint64_t nAllResFileDataSize;
+  uint8_t isFreePackFileStream;
+  LPWSTR wsPackFileName;
+  uint64_t PackFileBeginPos;
+  uint64_t PackFileEndPos;
+  uint32_t aFMode;
+  uint32_t unx;
+  uint32_t fnLocker1;
+  uint32_t pLocker;
+  void *fnLocker1;
+  uint8_t isPackFileErro;
+  uint32_t nCryptorKey;
+  uint8_t aCryptorTable[256];
+  uint8_t nxxx[7];
+  uint8_t isFMakeMemoryStreamMode;
+  TMemoryStream *pKeyFileCryptorTable;
+  uint32_t nLastReadResFileAfterDecSize;
+  uint32_t nLastReadResFileBeforeDecSize;
+  uint16_t un2;
+};
+
+struct __attribute__((packed)) __attribute__((aligned(4))) TFilePack_Entry_Info
+{
+  uint64_t nPos;
+  uint32_t nEncSize;
+  uint32_t nOrgSize;
+  uint32_t isCompress;
+  uint32_t nCryptorVersion;
+  uint32_t nCheckKey;
+};
+
+struct THashTable
+{
+  uint32_t un1;
+  uint32_t TableSize;
+  uint32_t FTableMask;
+  THashTableInfo **pHashTableInfoArray;
+  uint32_t *pHashTableCountArray;
+  TStream *pMapSeqTableSize;
+  uint32_t FDataCount;
+  uint32_t FCache;
+  uint32_t nFSaftyDataSize;
+  uint32_t FStringHashVersion;
+  uint32_t unc;
+};
+
+struct __attribute__((aligned(8))) THashTableInfo
+{
+  LPWSTR wpFilePath;
+  uint32_t un0;
+  uint64_t nMapTableSeq;
+  uint32_t nFileNameHash;
+  uint32_t nSaftySize;
+};
+
+struct __attribute__((aligned(4))) THashFilePack
+{
+  _BYTE gap0[4];
+  _BYTE isFError;
+  THashTable *pHashTable;
+  TFilePack *pTFilePack;
+  LPWSTR strHashFilename;
+  LPWSTR strPackFilename;
+  uint32_t un4;
+};
+
+struct TAnimationBMP
+{
+  uint32_t dword0;
+  uint32_t un0;
+  uint8_t gap4[12];
+  uint32_t un1;
+  uint32_t FLoadVersion;
+  uint32_t FCurrentVersion;
+  LPWSTR wpFilePath;
+  uint8_t isFEditMode;
+  uint32_t FMemoryBlockPool;
+  uint32_t FUseImageList;
+  uint32_t FUseImageListx;
+  uint32_t FUseSoundList;
+  uint32_t unx11;
+  uint32_t FPreMotion;
+  uint32_t aTable[256];
+  uint32_t FPlaySpeed;
+  uint32_t e0;
+  uint32_t e1;
+  uint32_t e2;
+  uint32_t e3;
+  uint32_t FSoundVolume;
+  uint32_t e5;
+  uint32_t e6;
+  uint32_t FTempNo;
+  uint32_t FWaveInputMul;
+  uint32_t FSND;
+  uint32_t FKeyStack;
+  uint32_t FExternalGlobalTime;
+  uint32_t FExternalMouseX;
+  uint32_t FExternalMouseY;
+  uint32_t CollisionStack;
+  uint32_t FExternalArg;
+  uint32_t dword484;
+  uint32_t aUnTable0[4];
+  uint32_t aUnTable1[4];
+  uint8_t isFTemplateLoad;
+  TABMPData10 *Data;
+  TABMPImage10 *Image;
+  TABMPSound10 *Sound;
+  uint32_t CollisionStack_;
+  uint8_t isDrawInformation;
+  uint8_t isDrawCollision;
+  uint32_t EditLayerNo;
+  uint8_t isDrawCurrentLayerOnly;
+  uint32_t MotionPlayTime;
+  uint32_t aTable1[256];
+  uint32_t aTable2[256];
+  uint32_t aTable3[256];
+  uint32_t gap4C5[15];
+  uint32_t ExternalRepTable;
+  uint32_t ExternalRepTable;
+  uint32_t unx1;
+  uint32_t unx2;
+  uint32_t unx3;
+  uint32_t unx4;
+  uint32_t unx5;
+  uint32_t unx6;
+  uint32_t unx7;
+  uint32_t unx8;
+  uint32_t unx9[25];
+};
+
+struct TABMPSound10
+{
+  uint32_t un0;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t FEditMode;
+  uint32_t un5;
+  uint32_t FLoadVersion;
+  uint32_t FCurrentVersion;
+  uint32_t un8;
+  uint32_t FData;
+  uint32_t FName;
+  uint32_t SaveMode;
+  uint32_t SoundFileData;
+  uint32_t WaveData;
+  uint32_t HashCode;
+  uint32_t unF;
+  uint32_t unG;
+};
+
+struct TABMPSoundData10
+{
+  uint32_t un0;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t un4;
+  uint32_t un5;
+  uint32_t FLoadVersion;
+  uint32_t un7;
+  uint32_t un8;
+  uint32_t PreSaveMode;
+  uint32_t FName;
+  uint32_t SaveMode;
+  uint32_t SoundFileData;
+  TStream *WaveData;
+  uint32_t HashCode;
+  uint32_t unf;
+};
+
+struct TABMPImage10
+{
+  uint32_t un0;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t FEditMode;
+  uint32_t un5;
+  uint32_t FLoadVersion;
+  uint32_t FCurrentVersion;
+  uint32_t un8;
+  uint32_t FSND;
+  uint32_t FData;
+  uint32_t unB;
+  uint32_t unC;
+  uint32_t unD;
+  uint32_t unE;
+  uint32_t unF;
+  uint32_t unG;
+  uint32_t unH;
+  uint32_t unI;
+};
+
+struct TABMPImageData10
+{
+  uint32_t un0;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t un4;
+  uint32_t un5;
+  uint32_t FLoadVersion;
+  uint32_t un7;
+  uint32_t un8;
+  uint32_t PreSaveMode;
+  LPWSTR FFilterOP;
+  uint32_t FARGB8888Data;
+  uint32_t FChangedImage;
+  uint32_t FMovie;
+  uint32_t FTheora;
+  uint32_t FModel;
+  uint32_t FAnimation;
+  uint32_t FOffsetX;
+  uint32_t FOffsetY;
+  uint32_t FOffsetZ;
+  uint32_t FVirtualWidth;
+  uint32_t FVirtualHeight;
+  uint32_t FVirtualDepth;
+  uint32_t FName;
+  uint32_t un2e;
+  uint32_t FRenderingTexture;
+  uint32_t FRenderingTextureTime;
+  uint32_t un5e;
+  uint32_t FRenderingTextureBGColor;
+  uint32_t FRenderingTextureMode;
+  uint32_t un8e;
+  uint32_t un9e;
+  uint32_t unae;
+  uint32_t un0d;
+  uint32_t un1d;
+  uint32_t un2d;
+  uint32_t un3d;
+  uint32_t un4d;
+  uint32_t un5d;
+  uint32_t un6d;
+  uint32_t un7d;
+  uint32_t un8d;
+  uint32_t un9d;
+  uint32_t unad;
+  uint32_t un0h;
+  uint32_t un1h;
+  uint32_t un2h;
+  uint32_t un3h;
+  uint32_t un4h;
+  uint32_t un5h;
+  uint32_t un6h;
+  uint32_t un7h;
+  uint32_t un8h;
+  uint32_t un9h;
+  uint32_t unah;
+  uint32_t un0o;
+  uint32_t un1o;
+  uint32_t un2o;
+  uint32_t un3o;
+  uint32_t un4o;
+  uint32_t un5o;
+  uint32_t un6o;
+  uint32_t un7o;
+  uint32_t un8o;
+  uint32_t un9o;
+  uint32_t unao;
+  uint32_t un0q;
+  uint32_t un1q;
+  uint32_t un2q;
+  uint32_t un3q;
+  uint32_t SaveMode;
+  TMemoryStream *ImageFileData;
+  LPWSTR HashCode;
+  uint32_t un7q;
+  uint32_t un7q1;
+  uint32_t un7q2;
+};
+
+struct TABMPData10
+{
+  uint32_t un0;
+  uint32_t un1;
+  uint32_t un2;
+  uint32_t un3;
+  uint32_t un4;
+  uint32_t un5;
+  uint32_t FLoadVersion;
+  uint32_t un7;
+  uint32_t un8;
+  uint32_t un9;
+  uint32_t name;
+  uint32_t unB;
+  uint32_t SizeWidth;
+  uint32_t SizeHeight;
+  uint32_t SizeDepth;
+  uint32_t Memo;
+  uint32_t unG;
+  uint32_t unH;
+  uint32_t unI;
+};
+
+struct QLIE_Delphi_Str
+{
+  uint32_t nLen;
+  wchar_t *wpStr;
+};
+
+```
 
 
-## Comment
+
+## Comments
 
 - QLIE_FilePack_t::Header_t::Info_t::signature // 识别标志字符串，不区分大小写
 - QLIE_FilePack_t::Header_t::Cryptor_t::hash_table_size // 如果为0则不读取hash table 或 hash table存储在单独的文件中(.hash) 或 没有hash table(没有hash table则通过一个个文件名对比来查找文件)
@@ -173,7 +531,7 @@ struct ABMP12
 
 
 
-## Function
+## Functions
 
 - 004EE0A8 从keyfile(在exe的resources(RCData::RESKEY)里，每个封包也有keyfile文件(pack_keyfile_...key))生成解密表，主要用于解密文件数据
 - 004EE18E 检查signature
