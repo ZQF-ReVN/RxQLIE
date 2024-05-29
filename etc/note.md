@@ -162,6 +162,16 @@ struct ABMP12
     ABImage10_t abimage;
     ABSound10_t absound;
 }
+
+struct DPNG_Header
+{
+  char aSignature[4];
+  uint32_t un0;
+  uint32_t nSplit;
+  uint32_t nWidth;
+  uint32_t nHeigh;
+};
+
 ```
 
 ### Memory Structures

@@ -1,5 +1,5 @@
 -- project
-set_project("qlie-tools")
+set_project("zqf-revne-qlie")
 set_xmakever("2.8.9")
 
 -- language
@@ -25,11 +25,23 @@ end
 add_repositories("Drepo https://github.com/Dir-A/Drepo.git")
 
 -- packages
-add_requires("zqf-zut 347d8cf510b493d713871ed429b728657240fd1d")
+add_requires("zqf-zut e4b5eb1963a8f00b878d78ff7ceefc34a1128a15")
 
 -- targets
-target("qlie-tools-test")
+target("zqf-revne-qlie")
+    set_kind("$(kind)")
+    if is_plat("windows") then
+        if is_kind("shared") then
+            add_rules("utils.symbols.export_all", {export_classes = true})
+        end
+    end
+    add_files("src/**.cpp")
+    add_includedirs("include", {public = true})
+    add_headerfiles("include/(**.h)")
+    add_packages("zqf-zut", {public = true})
+
+target("zqf-revne-test")
     set_default(false)
     set_kind("binary")
     add_files("test/main.cpp")
-    add_packages("zqf-zut")
+    add_deps("zqf-revne-qlie")
