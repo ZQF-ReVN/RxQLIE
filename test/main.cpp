@@ -11,9 +11,13 @@ auto main() -> int
 
 	try
 	{
-		Revne::RxQLIE::AnimationBMP abmp("back01.b");
-		abmp.Store("back01/");
+		//Zut::ZxMem file_data{ "back01.b" };
+		//Revne::RxQLIE::AnimationBMP abmp{ Zut::ZxView::Reader{ file_data.Ptr() } };
+		//abmp.Export("back01/");
 
+		Revne::RxQLIE::AnimationBMP abmpx{ std::string_view{ "back01/" } };
+
+		int a = 0;
 	}
 	catch (const std::exception& err)
 	{
