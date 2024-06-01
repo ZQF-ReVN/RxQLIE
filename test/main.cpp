@@ -16,6 +16,7 @@ auto main() -> int
 		//abmp.Export("back01/");
 
 		Revne::RxQLIE::AnimationBMP abmpx{ std::string_view{ "back01/" } };
+		abmpx.Save("123/");
 
 		int a = 0;
 	}

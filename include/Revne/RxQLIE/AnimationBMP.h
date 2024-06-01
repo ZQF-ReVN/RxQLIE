@@ -51,12 +51,12 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPData15();
-		ABMPData15(Zut::ZxView::Reader& zReader);
+		ABMPData15(Zut::ZxView::Reader& zvReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zReader) -> void;
-		auto Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
-		auto Export(const std::string_view msDir) const->Zut::ZxJson::JObject_t;
+		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
+		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -97,13 +97,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPImageData15();
-		ABMPImageData15(Zut::ZxView::Reader& zReader);
-		ABMPImageData15(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject);
+		ABMPImageData15(Zut::ZxView::Reader& zvReader);
+		ABMPImageData15(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zReader) -> void;
-		auto Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
-		auto Export(const std::string_view msDir) const->Zut::ZxJson::JObject_t;
+		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
+		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -117,12 +117,12 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPImage10();
-		ABMPImage10(Zut::ZxView::Reader& zReader);
+		ABMPImage10(Zut::ZxView::Reader& zvReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zReader) -> void;
-		auto Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
-		auto Export(const std::string_view msDir) const->Zut::ZxJson::JObject_t;
+		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
+		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -148,13 +148,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPSoundData12();
-		ABMPSoundData12(Zut::ZxView::Reader& zReader);
-		ABMPSoundData12(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject);
+		ABMPSoundData12(Zut::ZxView::Reader& zvReader);
+		ABMPSoundData12(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zReader) -> void;
-		auto Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
-		auto Export(const std::string_view msDir) const->Zut::ZxJson::JObject_t;
+		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
+		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -169,12 +169,12 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPSound10();
-		ABMPSound10(Zut::ZxView::Reader& zReader);
+		ABMPSound10(Zut::ZxView::Reader& zvReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zReader) -> void;
-		auto Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
-		auto Export(const std::string_view msDir) const->Zut::ZxJson::JObject_t;
+		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
+		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -192,12 +192,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		AnimationBMP();
-		AnimationBMP(Zut::ZxView::Reader zReader);
+		AnimationBMP(Zut::ZxView::Reader zvReader);
 		AnimationBMP(const std::string_view msDir);
 
 	public:
-		auto Load(Zut::ZxView::Reader zReader) -> void;
+		auto Load(Zut::ZxView::Reader zvReader) -> void;
 		auto Load(const std::string_view msDir) -> void;
-		auto Export(const std::string_view msDir) -> void;
+		auto Save(const std::string_view msSaveDir) -> void;
+		auto Make(const std::string_view msMakePath) -> void;
 	};
 }

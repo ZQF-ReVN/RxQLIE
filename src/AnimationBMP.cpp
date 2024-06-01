@@ -8,39 +8,38 @@ namespace Zqf::Revne::RxQLIE
 
 	}
 
-	ABMPData15::ABMPData15(Zut::ZxView::Reader& zReader)
+	ABMPData15::ABMPData15(Zut::ZxView::Reader& zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
-	auto ABMPData15::Load(Zut::ZxView::Reader& zReader) -> void
+	auto ABMPData15::Load(Zut::ZxView::Reader& zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "abdata15" });
+		RxQLIE::CheckSignature(zvReader, { "abdata15" });
 
-		const auto data_size = zReader.Get<uint32_t>();
-		const auto data_ptr = zReader.CurPtr<uint8_t*>();
+		const auto data_size = zvReader.Get<uint32_t>();
+		const auto data_ptr = zvReader.CurPtr<uint8_t*>();
 		m_zmData.Copy(std::span{ data_ptr, data_size });
-		zReader.IncPos(data_size);
+		zvReader.IncPos(data_size);
 	}
 
-	auto ABMPData15::Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
+	auto ABMPData15::Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
 	{
 		if (rfJObject["version"].Get<size_t>() != 15)
 		{
 			throw std::runtime_error("error abmpdata version");
 		}
 
-		m_zmData.Load(msDir + "abdata15.bin");
+		m_zmData.Load(std::string{ msDir }.append("abdata15.bin"));
 	}
 
-	auto ABMPData15::Export(const std::string_view msDir) const -> Zut::ZxJson::JObject_t
+	auto ABMPData15::Save(const std::string_view msSaveDir) const -> Zut::ZxJson::JObject_t
 	{
-		Zut::ZxFile::SaveDataViaPath(std::string{ msDir } + "abdata15.bin", std::span{ m_zmData }, true);
+		Zut::ZxFile::SaveDataViaPath(std::string{ msSaveDir }.append("abdata15.bin"), std::span{ m_zmData }, true);
 
 		Zut::ZxJson::JObject_t json;
 		json["version"] = 15;
 		json["data_size"] = m_zmData.SizeBytes();
-
 		return json;
 	}
 
@@ -60,26 +59,26 @@ namespace Zqf::Revne::RxQLIE
 
 	}
 
-	ABMPImageData15::ABMPImageData15(Zut::ZxView::Reader& zReader)
+	ABMPImageData15::ABMPImageData15(Zut::ZxView::Reader& zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
-	ABMPImageData15::ABMPImageData15(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject)
+	ABMPImageData15::ABMPImageData15(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject)
 	{
 		this->Load(msDir, rfJObject);
 	}
 
-	auto ABMPImageData15::Load(Zut::ZxView::Reader& zReader) -> void
+	auto ABMPImageData15::Load(Zut::ZxView::Reader& zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "abimgdat15" });
-		m_nVirtualFlag = zReader.Get<uint32_t>();
-		m_u16FileName = RxQLIE::DelphiStrView<char16_t>(zReader);
-		m_msHashName = RxQLIE::DelphiStrView<char>(zReader);
-		m_eType = static_cast<ABMPImageDataType>(zReader.Get<uint8_t>());
-		m_nOffsetX = zReader.Get<uint32_t>();
-		m_nOffsetY = zReader.Get<uint32_t>();
-		m_nOffsetZ = zReader.Get<uint32_t>();
+		RxQLIE::CheckSignature(zvReader, { "abimgdat15" });
+		m_nVirtualFlag = zvReader.Get<uint32_t>();
+		m_u16FileName = RxQLIE::DelphiStrView<char16_t>(zvReader);
+		m_msHashName = RxQLIE::DelphiStrView<char>(zvReader);
+		m_eType = static_cast<ABMPImageDataType>(zvReader.Get<uint8_t>());
+		m_nOffsetX = zvReader.Get<uint32_t>();
+		m_nOffsetY = zvReader.Get<uint32_t>();
+		m_nOffsetZ = zvReader.Get<uint32_t>();
 
 		if (m_nVirtualFlag > 2)
 		{
@@ -88,21 +87,21 @@ namespace Zqf::Revne::RxQLIE
 
 		if (m_nVirtualFlag >= 2)
 		{
-			m_nVirtualWidth = zReader.Get<uint32_t>();
-			m_nVirtualHeigh = zReader.Get<uint32_t>();
-			m_nVirtualDepth = zReader.Get<uint32_t>();
+			m_nVirtualWidth = zvReader.Get<uint32_t>();
+			m_nVirtualHeigh = zvReader.Get<uint32_t>();
+			m_nVirtualDepth = zvReader.Get<uint32_t>();
 		}
 
-		m_nRenderingTextureMode = zReader.Get<uint8_t>();
-		m_nRenderingTextureBGColor = zReader.Get<uint32_t>();
+		m_nRenderingTextureMode = zvReader.Get<uint8_t>();
+		m_nRenderingTextureBGColor = zvReader.Get<uint32_t>();
 
-		const auto data_size = zReader.Get<uint32_t>();
-		const auto data_ptr = zReader.CurPtr<uint8_t*>();
+		const auto data_size = zvReader.Get<uint32_t>();
+		const auto data_ptr = zvReader.CurPtr<uint8_t*>();
 		m_zmData.Copy(std::span{ data_ptr, data_size });
-		zReader.IncPos(data_size);
+		zvReader.IncPos(data_size);
 	}
 
-	auto ABMPImageData15::Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
+	auto ABMPImageData15::Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
 	{
 		if (rfJObject["version"].Get<size_t>() != 15)
 		{
@@ -137,20 +136,18 @@ namespace Zqf::Revne::RxQLIE
 
 		if (rfJObject["data_size"].Get<size_t>())
 		{
-			m_zmData.Load(msDir + std::string(file_name).append(this->GetSuffix()));
+			m_zmData.Load(std::string{ msDir }.append(file_name).append(this->GetSuffix()));
 		}
 	}
 
-	auto ABMPImageData15::Export(const std::string_view msDir) const -> Zut::ZxJson::JObject_t
+	auto ABMPImageData15::Save(const std::string_view msSaveDir) const -> Zut::ZxJson::JObject_t
 	{
 		auto file_suffix = this->GetSuffix();
 		auto file_name_u8 = Zut::ZxStr::CvtSafe(m_u16FileName, Zut::CodePage::UTF8);
 
 		if (m_zmData.SizeBytes())
 		{
-			std::string save_path{ msDir };
-			save_path.append(file_name_u8.first).append(file_suffix);
-			Zut::ZxFile::SaveDataViaPath(save_path, std::span{ m_zmData }, true);
+			Zut::ZxFile::SaveDataViaPath(std::string{ msSaveDir }.append(file_name_u8.first).append(file_suffix), std::span{ m_zmData }, true);
 		}
 
 		Zut::ZxJson::JObject_t json;
@@ -221,22 +218,22 @@ namespace Zqf::Revne::RxQLIE
 	}
 
 
-	ABMPImage10::ABMPImage10(Zut::ZxView::Reader& zReader)
+	ABMPImage10::ABMPImage10(Zut::ZxView::Reader& zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
-	auto ABMPImage10::Load(Zut::ZxView::Reader& zReader) -> void
+	auto ABMPImage10::Load(Zut::ZxView::Reader& zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "abimage10" });
+		RxQLIE::CheckSignature(zvReader, { "abimage10" });
 
-		for (auto imgdat_cnt = zReader.Get<uint8_t>(); auto _ : std::views::iota(0u, imgdat_cnt))
+		for (auto imgdat_cnt = zvReader.Get<uint8_t>(); auto _ : std::views::iota(0u, imgdat_cnt))
 		{
-			m_vcData.emplace_back(zReader);
+			m_vcData.emplace_back(zvReader);
 		}
 	}
 
-	auto ABMPImage10::Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
+	auto ABMPImage10::Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
 	{
 		if (rfJObject["version"].Get<size_t>() != 10)
 		{
@@ -249,7 +246,7 @@ namespace Zqf::Revne::RxQLIE
 		}
 	}
 
-	auto ABMPImage10::Export(const std::string_view msDir) const -> Zut::ZxJson::JObject_t
+	auto ABMPImage10::Save(const std::string_view msSaveDir) const -> Zut::ZxJson::JObject_t
 	{
 		Zut::ZxJson::JObject_t json;
 		json["version"] = 10;
@@ -258,7 +255,7 @@ namespace Zqf::Revne::RxQLIE
 
 		for (const auto& img_dat : m_vcData)
 		{
-			array.emplace_back(img_dat.Export(msDir));
+			array.emplace_back(img_dat.Save(msSaveDir));
 		}
 
 		return json;
@@ -284,37 +281,37 @@ namespace Zqf::Revne::RxQLIE
 
 	}
 
-	ABMPSoundData12::ABMPSoundData12(Zut::ZxView::Reader& zReader)
+	ABMPSoundData12::ABMPSoundData12(Zut::ZxView::Reader& zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
-	ABMPSoundData12::ABMPSoundData12(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject)
+	ABMPSoundData12::ABMPSoundData12(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject)
 	{
 		this->Load(msDir, rfJObject);
 	}
 
-	auto ABMPSoundData12::Load(Zut::ZxView::Reader& zReader) -> void
+	auto ABMPSoundData12::Load(Zut::ZxView::Reader& zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "absnddat12" });
-		m_nFlag = zReader.Get<uint32_t>();
+		RxQLIE::CheckSignature(zvReader, { "absnddat12" });
+		m_nFlag = zvReader.Get<uint32_t>();
 
 		if (m_nFlag > 1)
 		{
 			throw std::runtime_error("error");
 		}
 
-		m_u16FileName = RxQLIE::DelphiStrView<char16_t>(zReader);
-		m_msHashName = RxQLIE::DelphiStrView<char>(zReader);
-		m_eType = static_cast<ABMPSoundDataType>(zReader.Get<uint8_t>());
+		m_u16FileName = RxQLIE::DelphiStrView<char16_t>(zvReader);
+		m_msHashName = RxQLIE::DelphiStrView<char>(zvReader);
+		m_eType = static_cast<ABMPSoundDataType>(zvReader.Get<uint8_t>());
 
-		const auto data_size = zReader.Get<uint32_t>();
-		const auto data_ptr = zReader.CurPtr<uint8_t*>();
+		const auto data_size = zvReader.Get<uint32_t>();
+		const auto data_ptr = zvReader.CurPtr<uint8_t*>();
 		m_zmData.Copy(std::span{ data_ptr, data_size });
-		zReader.IncPos(data_size);
+		zvReader.IncPos(data_size);
 	}
 
-	auto ABMPSoundData12::Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
+	auto ABMPSoundData12::Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
 	{
 		if (rfJObject["version"].Get<size_t>() != 12)
 		{
@@ -330,20 +327,18 @@ namespace Zqf::Revne::RxQLIE
 
 		if (rfJObject["data_size"].Get<size_t>())
 		{
-			m_zmData.Load(msDir + std::string(file_name).append(this->GetSuffix()));
+			m_zmData.Load(std::string{ msDir }.append(file_name).append(this->GetSuffix()));
 		}
 	}
 
-	auto ABMPSoundData12::Export(const std::string_view msDir) const -> Zut::ZxJson::JObject_t
+	auto ABMPSoundData12::Save(const std::string_view msSaveDir) const -> Zut::ZxJson::JObject_t
 	{
 		auto file_suffix = this->GetSuffix();
 		auto file_name_u8 = Zut::ZxStr::CvtSafe(m_u16FileName, Zut::CodePage::UTF8);
 
 		if (m_zmData.SizeBytes())
 		{
-			std::string save_path{ msDir };
-			save_path.append(file_name_u8.first).append(file_suffix);
-			Zut::ZxFile::SaveDataViaPath(save_path, std::span{ m_zmData }, true);
+			Zut::ZxFile::SaveDataViaPath(std::string{ msSaveDir }.append(file_name_u8.first).append(file_suffix), std::span{ m_zmData }, true);
 		}
 
 		Zut::ZxJson::JObject_t json;
@@ -382,22 +377,22 @@ namespace Zqf::Revne::RxQLIE
 
 	}
 
-	ABMPSound10::ABMPSound10(Zut::ZxView::Reader& zReader)
+	ABMPSound10::ABMPSound10(Zut::ZxView::Reader& zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
-	auto ABMPSound10::Load(Zut::ZxView::Reader& zReader) -> void
+	auto ABMPSound10::Load(Zut::ZxView::Reader& zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "absound10" });
+		RxQLIE::CheckSignature(zvReader, { "absound10" });
 
-		for (auto snddat_cnt = zReader.Get<uint8_t>(); auto _ : std::views::iota(0u, snddat_cnt))
+		for (auto snddat_cnt = zvReader.Get<uint8_t>(); auto _ : std::views::iota(0u, snddat_cnt))
 		{
-			m_vcData.emplace_back(zReader);
+			m_vcData.emplace_back(zvReader);
 		}
 	}
 
-	auto ABMPSound10::Load(const std::string& msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
+	auto ABMPSound10::Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void
 	{
 		if (rfJObject["version"].Get<size_t>() != 10)
 		{
@@ -410,17 +405,16 @@ namespace Zqf::Revne::RxQLIE
 		}
 	}
 
-	auto ABMPSound10::Export(const std::string_view msDir) const -> Zut::ZxJson::JObject_t
+	auto ABMPSound10::Save(const std::string_view msSaveDir) const -> Zut::ZxJson::JObject_t
 	{
 		Zut::ZxJson::JObject_t json;
 		json["version"] = 10;
 		json["conut"] = m_vcData.size();
 
 		auto& array = json["absnddat_list"].Sure<Zut::ZxJson::JArray_t&>();
-
 		for (const auto& snd_dat : m_vcData)
 		{
-			array.emplace_back(snd_dat.Export(msDir));
+			array.emplace_back(snd_dat.Save(msSaveDir));
 		}
 
 		return json;
@@ -445,9 +439,9 @@ namespace Zqf::Revne::RxQLIE
 
 	}
 
-	AnimationBMP::AnimationBMP(Zut::ZxView::Reader zReader)
+	AnimationBMP::AnimationBMP(Zut::ZxView::Reader zvReader)
 	{
-		this->Load(zReader);
+		this->Load(zvReader);
 	}
 
 	AnimationBMP::AnimationBMP(const std::string_view msDir)
@@ -455,13 +449,13 @@ namespace Zqf::Revne::RxQLIE
 		this->Load(msDir);
 	}
 
-	auto AnimationBMP::Load(Zut::ZxView::Reader zReader) -> void
+	auto AnimationBMP::Load(Zut::ZxView::Reader zvReader) -> void
 	{
-		RxQLIE::CheckSignature(zReader, { "abmp12" });
+		RxQLIE::CheckSignature(zvReader, { "abmp12" });
 
-		m_ABData.Load(zReader);
-		m_ABImage.Load(zReader);
-		m_ABSound.Load(zReader);
+		m_ABData.Load(zvReader);
+		m_ABImage.Load(zvReader);
+		m_ABSound.Load(zvReader);
 	}
 
 	auto AnimationBMP::Load(const std::string_view msDir) -> void
@@ -477,13 +471,18 @@ namespace Zqf::Revne::RxQLIE
 		m_ABSound.Load(dir + "absound/", json["absound"].Sure<Zut::ZxJson::JObject_t&>());
 	}
 
-	auto AnimationBMP::Export(const std::string_view msDir) -> void
+	auto AnimationBMP::Save(const std::string_view msSaveDir) -> void
 	{
-		std::string dir{ msDir };
+		std::string save_dir{ msSaveDir };
 		Zut::ZxJson::JObject_t json;
-		json["abdata"] = m_ABData.Export(dir + "abdata/");
-		json["abimage"] = m_ABImage.Export(dir + "abimage/");
-		json["absound"] = m_ABSound.Export(dir + "absound/");
-		Zut::ZxJson::JDoc{ std::move(json) }.Save(dir + "info.json", true);
+		json["abdata"] = m_ABData.Save(save_dir + "abdata/");
+		json["abimage"] = m_ABImage.Save(save_dir + "abimage/");
+		json["absound"] = m_ABSound.Save(save_dir + "absound/");
+		Zut::ZxJson::JDoc{ std::move(json) }.Save(save_dir + "info.json", true);
+	}
+
+	auto AnimationBMP::Make(const std::string_view msPath) -> void
+	{
+
 	}
 }
