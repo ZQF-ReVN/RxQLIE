@@ -11,11 +11,11 @@ auto main() -> int
 
 	try
 	{
-		//Zut::ZxMem file_data{ "back01.b" };
-		//Revne::RxQLIE::AnimationBMP abmp{ Zut::ZxView::Reader{ file_data.Ptr() } };
-		//abmp.Export("back01/");
+		Zut::ZxMem file_data{ "Logo2.b" };
+		Revne::RxQLIE::AnimationBMP12 abmp{ file_data };
+		abmp.Save("Logo2/");
 
-		Revne::RxQLIE::AnimationBMP abmpx{ std::string_view{ "back01/" } };
+		Revne::RxQLIE::AnimationBMP12 abmpx{ std::string_view{ "back01/" } };
 		abmpx.Save("123/");
 
 		int a = 0;

@@ -4,7 +4,6 @@
 #include <vector>
 #include <Zut/ZxStr.h>
 #include <Zut/ZxMem.h>
-#include <Zut/ZxView.h>
 #include <Zut/ZxJson.h>
 
 #include <Revne/RxQLIE/Cryptor.h>
@@ -12,7 +11,7 @@
 
 namespace Zqf::Revne::RxQLIE
 {
-	static auto CheckSignature(Zut::ZxView::Reader& zReader, std::array<char, 16> aSignature) -> void
+	static auto CheckSignature(Zut::ZxMem& zReader, std::array<char, 16> aSignature) -> void
 	{
 		if (zReader.Get<std::array<char, 16>>() != aSignature)
 		{
@@ -21,11 +20,11 @@ namespace Zqf::Revne::RxQLIE
 	}
 
 	template<class T>
-	static auto DelphiStrView(Zut::ZxView::Reader& zReader) -> std::basic_string_view<T>
+	static auto DelphiStrView(Zut::ZxMem& zReader) -> std::basic_string_view<T>
 	{
 		const auto str_size = zReader.Get<uint16_t>();
-		const auto str_ptr = zReader.CurPtr<T*>();
-		zReader.IncPos(str_size * sizeof(T));
+		const auto str_ptr = zReader.PtrCur<T*>();
+		zReader.PosInc(str_size * sizeof(T));
 		return { str_ptr, str_size };
 	}
 }
@@ -38,11 +37,13 @@ namespace Zqf::Revne::RxQLIE
 
 	};
 
+
 	class ABMPMotion
 	{
 	private:
 		std::vector<ABMPLayer> m_vcData;
 	};
+
 
 	class ABMPData15
 	{
@@ -51,12 +52,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPData15();
-		ABMPData15(Zut::ZxView::Reader& zvReader);
+		ABMPData15(Zut::ZxMem& zmReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
 		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
+		auto Make(Zut::ZxMem& zmWriter) const -> void;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -78,6 +80,7 @@ namespace Zqf::Revne::RxQLIE
 		MDL = 8 // .mdl
 	};
 
+
 	class ABMPImageData15
 	{
 	private:
@@ -97,18 +100,20 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPImageData15();
-		ABMPImageData15(Zut::ZxView::Reader& zvReader);
+		ABMPImageData15(Zut::ZxMem& zmReader);
 		ABMPImageData15(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
 		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
+		auto Make(Zut::ZxMem& zmWriter) const -> void;
 
 	public:
 		auto SizeBytes() const->size_t;
 		auto GetSuffix() const->std::string_view;
 	};
+
 
 	class ABMPImage10
 	{
@@ -117,12 +122,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPImage10();
-		ABMPImage10(Zut::ZxView::Reader& zvReader);
+		ABMPImage10(Zut::ZxMem& zmReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
 		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
+		auto Make(Zut::ZxMem& zmWriter) const -> void;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -137,6 +143,7 @@ namespace Zqf::Revne::RxQLIE
 		OGG = 1
 	};
 
+
 	class ABMPSoundData12
 	{
 	private:
@@ -148,13 +155,14 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPSoundData12();
-		ABMPSoundData12(Zut::ZxView::Reader& zvReader);
+		ABMPSoundData12(Zut::ZxMem& zmReader);
 		ABMPSoundData12(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
 		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
+		auto Make(Zut::ZxMem& zmWriter) const -> void;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -169,12 +177,13 @@ namespace Zqf::Revne::RxQLIE
 
 	public:
 		ABMPSound10();
-		ABMPSound10(Zut::ZxView::Reader& zvReader);
+		ABMPSound10(Zut::ZxMem& zmReader);
 
 	public:
-		auto Load(Zut::ZxView::Reader& zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir, Zut::ZxJson::JObject_t& rfJObject) -> void;
 		auto Save(const std::string_view msSaveDir) const->Zut::ZxJson::JObject_t;
+		auto Make(Zut::ZxMem& zmWriter) const -> void;
 
 	public:
 		auto SizeBytes() const->size_t;
@@ -183,7 +192,7 @@ namespace Zqf::Revne::RxQLIE
 
 namespace Zqf::Revne::RxQLIE
 {
-	class AnimationBMP
+	class AnimationBMP12
 	{
 	private:
 		ABMPData15 m_ABData;
@@ -191,12 +200,12 @@ namespace Zqf::Revne::RxQLIE
 		ABMPSound10 m_ABSound;
 
 	public:
-		AnimationBMP();
-		AnimationBMP(Zut::ZxView::Reader zvReader);
-		AnimationBMP(const std::string_view msDir);
+		AnimationBMP12();
+		AnimationBMP12(Zut::ZxMem& zmReader);
+		AnimationBMP12(const std::string_view msDir);
 
 	public:
-		auto Load(Zut::ZxView::Reader zvReader) -> void;
+		auto Load(Zut::ZxMem& zmReader) -> void;
 		auto Load(const std::string_view msDir) -> void;
 		auto Save(const std::string_view msSaveDir) -> void;
 		auto Make(const std::string_view msMakePath) -> void;

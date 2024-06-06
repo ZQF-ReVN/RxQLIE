@@ -25,7 +25,7 @@ end
 add_repositories("Drepo https://github.com/Dir-A/Drepo.git")
 
 -- packages
-add_requires("zqf-zut 33dcb5c65be8f29557314117a874b07348d78d3f")
+add_requires("zqf-zut 8ed36a58b74cc1665e6f1faa9f661b33b2639ab6")
 
 -- targets
 target("zqf-revne-qlie")
