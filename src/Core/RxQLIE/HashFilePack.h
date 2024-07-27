@@ -1,8 +1,8 @@
 #pragma once
-#include <Revne/RxQLIE/Cryptor.h>
+#include <RxQLIE/Cryptor.h>
 
 
-namespace Zqf::Revne::QLIE
+namespace ZQF::RxQLIE
 {
 	class HashFilePack
 	{

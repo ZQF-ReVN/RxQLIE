@@ -3,10 +3,10 @@
 #include <ranges>
 #include <string_view>
 
-#include <Zut/ZxMem.h>
+#include <ZxMem/ZxMem.h>
 
 
-namespace Zqf::Revne::QLIE::Cryptor
+namespace ZQF::RxQLIE::Cryptor
 {
 	class XMM {
 	public:
@@ -129,8 +129,8 @@ namespace Zqf::Revne::QLIE::Cryptor
 	class LZW
 	{
 	public:
-		auto Dec(const std::span<const uint8_t> spData) -> Zut::ZxMem {}
-		auto Enc(const std::span<const uint8_t> spData) -> Zut::ZxMem {}
+		auto Dec([[maybe_unused]] const std::span<const uint8_t> spData) -> ZxMem {}
+		auto Enc([[maybe_unused]] const std::span<const uint8_t> spData) -> ZxMem {}
 	};
 
 	// 004E6328  004E5754
@@ -281,8 +281,8 @@ namespace Zqf::Revne::QLIE::Cryptor
 
 		}
 
-		auto Dec(const std::span<const uint8_t> spData) -> Zut::ZxMem {}
-		auto Enc(const std::span<const uint8_t> spData) -> Zut::ZxMem {}
+		auto Dec([[maybe_unused]]  const std::span<const uint8_t> spData) -> ZxMem {}
+		auto Enc([[maybe_unused]]  const std::span<const uint8_t> spData) -> ZxMem {}
 	};
 
 }
