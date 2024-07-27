@@ -9,27 +9,7 @@
 #include <Revne/RxQLIE/Cryptor.h>
 
 
-namespace Zqf::Revne::RxQLIE
-{
-	static auto CheckSignature(Zut::ZxMem& zReader, std::array<char, 16> aSignature) -> void
-	{
-		if (zReader.Get<std::array<char, 16>>() != aSignature)
-		{
-			throw std::runtime_error("erro signatrue");
-		}
-	}
-
-	template<class T>
-	static auto DelphiStrView(Zut::ZxMem& zReader) -> std::basic_string_view<T>
-	{
-		const auto str_size = zReader.Get<uint16_t>();
-		const auto str_ptr = zReader.PtrCur<T*>();
-		zReader.PosInc(str_size * sizeof(T));
-		return { str_ptr, str_size };
-	}
-}
-
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 	class ABMPLayer
 	{
@@ -48,6 +28,7 @@ namespace Zqf::Revne::RxQLIE
 	class ABMPData15
 	{
 	private:
+		size_t m_nVersion{};
 		Zut::ZxMem m_zmData;
 
 	public:
@@ -65,7 +46,7 @@ namespace Zqf::Revne::RxQLIE
 	};
 }
 
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 	enum class ABMPImageDataType : uint8_t
 	{
@@ -135,7 +116,7 @@ namespace Zqf::Revne::RxQLIE
 	};
 }
 
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 	enum class ABMPSoundDataType : uint8_t
 	{
@@ -190,7 +171,7 @@ namespace Zqf::Revne::RxQLIE
 	};
 }
 
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 	class AnimationBMP12
 	{

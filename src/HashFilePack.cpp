@@ -1,7 +1,7 @@
 #include <Revne/RxQLIE/HashFilePack.h>
 
 
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 
 }

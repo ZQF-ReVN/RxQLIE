@@ -2,7 +2,7 @@
 #include <Revne/RxQLIE/Cryptor.h>
 
 
-namespace Zqf::Revne::RxQLIE
+namespace Zqf::Revne::QLIE
 {
 	class HashFilePack
 	{
