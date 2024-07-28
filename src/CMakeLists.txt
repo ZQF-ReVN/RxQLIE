@@ -13,6 +13,10 @@ endif()
 list(APPEND Rvn_RxQLIE_Core_Src_Files
     "Core/RxQLIE/HashFilePack.cpp"
     "Core/RxQLIE/Cryptor.cpp"
+    "Core/RxQLIE/ABMPData.cpp"
+    "Core/RxQLIE/ABMPImage.cpp"
+    "Core/RxQLIE/ABMPSound.cpp"
+    "Core/RxQLIE/ABMPUtility.cpp"
     "Core/RxQLIE/AnimationBMP.cpp")
 
 # Set Library
