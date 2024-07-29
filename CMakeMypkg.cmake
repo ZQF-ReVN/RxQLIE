@@ -24,7 +24,7 @@ FetchContent_MakeAvailable(ZxCvt)
 FetchContent_Declare(
   ZxJson
   GIT_REPOSITORY https://github.com/ZQF-Zut/ZxJson.git
-  GIT_TAG 46e2de23c6e40ef26b838620637d660c2f076017)
+  GIT_TAG 0fdbc006c5ebb34314035db97d31f4c81385e0d8)
 
 FetchContent_MakeAvailable(ZxJson)
 

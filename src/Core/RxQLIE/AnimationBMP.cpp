@@ -36,19 +36,19 @@ namespace ZQF::RxQLIE
 
 	auto AnimationBMP12::Load(const std::string_view msDir) -> void
 	{
-		std::string dir{ msDir };
+		const std::string dir{ msDir };
 
-        auto json_doc = ZxJson::LoadViaFile(dir + "info.json");
-		auto& info_json = json_doc.Get<ZxJson::JObject_t&>();
+        const auto json_doc = ZxJson::LoadViaFile(dir + "info.json");
+		const auto& info_json = json_doc.GetObject();
 
-		m_ABData.Load(dir + "abdata/", info_json["abdata"].Sure<ZxJson::JObject_t&>());
-		m_ABImage.Load(dir + "abimage/", info_json["abimage"].Sure<ZxJson::JObject_t&>());
-		m_ABSound.Load(dir + "absound/", info_json["absound"].Sure<ZxJson::JObject_t&>());
+		m_ABData.Load(dir + "abdata/", info_json.at("abdata").GetObject());
+		m_ABImage.Load(dir + "abimage/", info_json.at("abimage").GetObject());
+		m_ABSound.Load(dir + "absound/", info_json.at("absound").GetObject());
 	}
 
 	auto AnimationBMP12::Save(const std::string_view msSaveDir) -> void
 	{
-		std::string save_dir{ msSaveDir };
+		const std::string save_dir{ msSaveDir };
 		ZxJson::JObject_t json;
 		json["abdata"] = m_ABData.Save(save_dir + "abdata/");
 		json["abimage"] = m_ABImage.Save(save_dir + "abimage/");

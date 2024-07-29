@@ -25,7 +25,7 @@ namespace ZQF::RxQLIE
     class ABMPData15
     {
     private:
-        size_t m_nVersion{};
+        std::size_t m_nVersion{};
         ZxMem m_zmData;
 
     public:
@@ -34,11 +34,11 @@ namespace ZQF::RxQLIE
 
     public:
         auto Load(ZxMem& zmReader) -> void;
-        auto Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void;
-        auto Save(const std::string_view msSaveDir) const->ZxJson::JObject_t;
+        auto Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void;
+        auto Save(const std::string_view msSaveDir) const -> ZxJson::JObject_t;
         auto Make(ZxMem& zmWriter) const -> void;
 
     public:
-        auto SizeBytes() const->size_t;
+        auto SizeBytes() const -> std::size_t;
     };
 }

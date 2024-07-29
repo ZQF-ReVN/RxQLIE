@@ -26,24 +26,24 @@ namespace ZQF::RxQLIE
         }
 
         char* end_ptr{};
-        m_nVersion = static_cast<size_t>(std::strtol(&cur_sig[6], &end_ptr, 10));
+        m_nVersion = static_cast<std::size_t>(std::strtol(&cur_sig[6], &end_ptr, 10));
 
-        constexpr std::array<size_t, 3> allow_version{ 15, 14, 13 };
+        constexpr std::array<std::size_t, 3> allow_version{ 15, 14, 13 };
         if (auto it = std::find(std::cbegin(allow_version), std::cend(allow_version), m_nVersion); it == std::cend(allow_version))
         {
             throw std::runtime_error("ABMPData::Load(): error signature");
         }
 
-        const auto data_size = zmReader.Get<uint32_t>();
-        const auto data_ptr = zmReader.PtrCur<uint8_t*>();
+        const auto data_size = zmReader.Get<std::uint32_t>();
+        const auto data_ptr = zmReader.PtrCur<std::uint8_t*>();
         m_zmData.Resize(data_size);
         m_zmData.Put(std::span{ data_ptr, data_size });
         zmReader.PosInc(data_size);
     }
 
-    auto ABMPData15::Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void
+    auto ABMPData15::Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void
     {
-        m_nVersion = rfJObject["version"].Get<decltype(m_nVersion)>();
+        m_nVersion = rfJObject.at("version").GetNum<decltype(m_nVersion)>();
         m_zmData.Load(std::string{ msDir }.append("abdata.bin"));
     }
 
@@ -51,10 +51,11 @@ namespace ZQF::RxQLIE
     {
         ZxFile::SaveDataViaPath(std::string{ msSaveDir }.append("abdata.bin"), m_zmData.Span(), true, true);
 
-        ZxJson::JObject_t json;
-        json["version"] = m_nVersion;
-        json["data_size"] = m_zmData.SizeBytes();
-        return json;
+        return ZxJson::JObject_t
+        {
+            { "version", m_nVersion },
+            { "data_size", m_zmData.SizeBytes() }
+        };
     }
 
     auto ABMPData15::Make(ZxMem& zmWriter) const -> void
@@ -65,14 +66,14 @@ namespace ZQF::RxQLIE
 
         zmWriter
             .Put(sig)
-            .Put(static_cast<uint32_t>(m_zmData.SizeBytes()))
+            .Put(static_cast<std::uint32_t>(m_zmData.SizeBytes()))
             .Put(m_zmData.Span());
     }
 
-    auto ABMPData15::SizeBytes() const -> size_t
+    auto ABMPData15::SizeBytes() const -> std::size_t
     {
-        size_t size = 16; // signature
-        size += sizeof(uint32_t); // data_size
+        std::size_t size = 16; // signature
+        size += sizeof(std::uint32_t); // data_size
         size += m_zmData.SizeBytes();
         return size;
     }

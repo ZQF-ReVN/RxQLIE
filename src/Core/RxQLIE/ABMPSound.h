@@ -8,7 +8,7 @@
 
 namespace ZQF::RxQLIE
 {
-    enum class ABMPSoundDataType : uint8_t
+    enum class ABMPSoundDataType : std::uint8_t
     {
         WAV = 0,
         OGG = 1
@@ -18,7 +18,7 @@ namespace ZQF::RxQLIE
     class ABMPSoundData12
     {
     private:
-        size_t m_nFlag{};
+        std::size_t m_nFlag{};
         std::u16string m_u16FileName;
         std::string m_msHashName;
         ABMPSoundDataType m_eType{};
@@ -27,17 +27,17 @@ namespace ZQF::RxQLIE
     public:
         ABMPSoundData12();
         ABMPSoundData12(ZxMem& zmReader);
-        ABMPSoundData12(const std::string_view msDir, ZxJson::JObject_t& rfJObject);
+        ABMPSoundData12(const std::string_view msDir, const ZxJson::JObject_t& rfJObject);
 
     public:
         auto Load(ZxMem& zmReader) -> void;
-        auto Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void;
-        auto Save(const std::string_view msSaveDir) const->ZxJson::JObject_t;
+        auto Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void;
+        auto Save(const std::string_view msSaveDir) const -> ZxJson::JObject_t;
         auto Make(ZxMem& zmWriter) const -> void;
 
     public:
-        auto SizeBytes() const->size_t;
-        auto GetSuffix() const->std::string_view;
+        auto SizeBytes() const -> std::size_t;
+        auto GetSuffix() const -> std::string_view;
     };
 
 
@@ -52,11 +52,11 @@ namespace ZQF::RxQLIE
 
     public:
         auto Load(ZxMem& zmReader) -> void;
-        auto Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void;
-        auto Save(const std::string_view msSaveDir) const->ZxJson::JObject_t;
+        auto Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void;
+        auto Save(const std::string_view msSaveDir) const -> ZxJson::JObject_t;
         auto Make(ZxMem& zmWriter) const -> void;
 
     public:
-        auto SizeBytes() const->size_t;
+        auto SizeBytes() const -> std::size_t;
     };
 }

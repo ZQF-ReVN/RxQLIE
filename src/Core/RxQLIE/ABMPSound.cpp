@@ -17,7 +17,7 @@ namespace ZQF::RxQLIE
         this->Load(zmReader);
     }
 
-    ABMPSoundData12::ABMPSoundData12(const std::string_view msDir, ZxJson::JObject_t& rfJObject)
+    ABMPSoundData12::ABMPSoundData12(const std::string_view msDir, const ZxJson::JObject_t& rfJObject)
     {
         this->Load(msDir, rfJObject);
     }
@@ -27,7 +27,7 @@ namespace ZQF::RxQLIE
         auto sig = zmReader.Get<std::array<char, 16>>();
         RxQLIE::CheckSignature(sig, "absnddat12");
 
-        m_nFlag = zmReader.Get<uint32_t>();
+        m_nFlag = zmReader.Get<std::uint32_t>();
 
         if (m_nFlag > 1)
         {
@@ -36,31 +36,31 @@ namespace ZQF::RxQLIE
 
         m_u16FileName = RxQLIE::DelphiStrView<char16_t>(zmReader);
         m_msHashName = RxQLIE::DelphiStrView<char>(zmReader);
-        m_eType = static_cast<ABMPSoundDataType>(zmReader.Get<uint8_t>());
+        m_eType = static_cast<ABMPSoundDataType>(zmReader.Get<std::uint8_t>());
 
-        const auto data_size = zmReader.Get<uint32_t>();
-        const auto data_ptr = zmReader.PtrCur<uint8_t*>();
+        const auto data_size = zmReader.Get<std::uint32_t>();
+        const auto data_ptr = zmReader.PtrCur<std::uint8_t*>();
         m_zmData.Resize(data_size);
         m_zmData.Put(std::span{ data_ptr, data_size });
         zmReader.PosInc(data_size);
     }
 
-    auto ABMPSoundData12::Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void
+    auto ABMPSoundData12::Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void
     {
-        if (rfJObject["version"].Get<size_t>() != 12)
+        if (rfJObject.at("version").GetNum() != 12)
         {
             throw std::runtime_error("error version");
         }
 
-        auto file_name = rfJObject["file_name"].Get<std::string_view>();
+        auto file_name = rfJObject.at("file_name").GetStrView();
 
         ZxCvt cvt;
-        m_nFlag = rfJObject["flag"].Get<decltype(m_nFlag)>();
+        m_nFlag = rfJObject.at("flag").GetNum<decltype(m_nFlag)>();
         m_u16FileName = cvt.UTF8ToUTF16LE(file_name);
-        m_msHashName = cvt.UTF8ToMBCS(rfJObject["hash_name"].Get<std::string_view>(), 932);
-        m_eType = static_cast<ABMPSoundDataType>(rfJObject["data_type"].Get<std::underlying_type_t<ABMPSoundDataType>>());
+        m_msHashName = cvt.UTF8ToMBCS(rfJObject.at("hash_name").GetStrView(), 932);
+        m_eType = static_cast<ABMPSoundDataType>(rfJObject.at("data_type").GetNum<std::underlying_type_t<ABMPSoundDataType>>());
 
-        if (rfJObject["data_size"].Get<size_t>())
+        if (rfJObject.at("data_size").GetNum())
         {
             m_zmData.Load(std::string{ msDir }.append(file_name).append(this->GetSuffix()));
         }
@@ -70,46 +70,47 @@ namespace ZQF::RxQLIE
     {
         ZxCvt cvt;
 
-        auto file_suffix = this->GetSuffix();
-        auto file_name_u8 = cvt.UTF16LEToUTF8(m_u16FileName);
+        const auto file_suffix = this->GetSuffix();
+        const auto file_name_u8 = cvt.UTF16LEToUTF8(m_u16FileName);
 
         if (m_zmData.SizeBytes())
         {
             ZxFile::SaveDataViaPath(std::string{ msSaveDir }.append(file_name_u8).append(file_suffix), m_zmData.Span(), true);
         }
 
-        ZxJson::JObject_t json;
-        json["version"] = 12;
-        json["flag"] = m_nFlag;
-        json["file_name"] = file_name_u8;
-        json["hash_name"] = cvt.MBCSToUTF8(m_msHashName, 932);
-        json["data_type"] = static_cast<uint8_t>(m_eType);
-        json["data_size"] = m_zmData.SizeBytes();
-        return json;
+        return ZxJson::JObject_t
+        {
+            { "version", 12 },
+            { "flag", m_nFlag },
+            { "file_name", file_name_u8 },
+            { "hash_name", cvt.MBCSToUTF8(m_msHashName, 932) },
+            { "data_type", static_cast<std::uint8_t>(m_eType) },
+            { "data_size", m_zmData.SizeBytes() }
+        };
     }
 
     auto ABMPSoundData12::Make(ZxMem& zmWriter) const -> void
     {
         zmWriter
             .Put(std::array<char, 16>{"absnddat12"})
-            .Put(static_cast<uint32_t>(m_nFlag))
-            .Put(static_cast<uint16_t>(m_u16FileName.size()))
+            .Put(static_cast<std::uint32_t>(m_nFlag))
+            .Put(static_cast<std::uint16_t>(m_u16FileName.size()))
             .Put(std::span{ m_u16FileName })
-            .Put(static_cast<uint16_t>(m_msHashName.size()))
+            .Put(static_cast<std::uint16_t>(m_msHashName.size()))
             .Put(std::span{ m_msHashName })
-            .Put(static_cast<uint8_t>(m_eType))
-            .Put(static_cast<uint32_t>(m_zmData.SizeBytes()))
+            .Put(static_cast<std::uint8_t>(m_eType))
+            .Put(static_cast<std::uint32_t>(m_zmData.SizeBytes()))
             .Put(m_zmData.Span());
     }
 
-    auto ABMPSoundData12::SizeBytes() const -> size_t
+    auto ABMPSoundData12::SizeBytes() const -> std::size_t
     {
-        size_t size = 16; // signature
-        size += sizeof(uint32_t); // flag
-        size += sizeof(uint16_t) + m_u16FileName.length() * sizeof(char16_t); // file_name
-        size += sizeof(uint16_t) + m_msHashName.length() * sizeof(char); // hash_name
-        size += sizeof(uint8_t); // type
-        size += sizeof(uint32_t); // data_size
+        std::size_t size = 16; // signature
+        size += sizeof(std::uint32_t); // flag
+        size += sizeof(std::uint16_t) + m_u16FileName.length() * sizeof(char16_t); // file_name
+        size += sizeof(std::uint16_t) + m_msHashName.length() * sizeof(char); // hash_name
+        size += sizeof(std::uint8_t); // type
+        size += sizeof(std::uint32_t); // data_size
         size += m_zmData.SizeBytes(); // data binary size
         return size;
     }
@@ -139,38 +140,39 @@ namespace ZQF::RxQLIE
         auto sig = zmReader.Get<std::array<char, 16>>();
         RxQLIE::CheckSignature(sig, "absound10");
 
-        for (auto snddat_cnt = zmReader.Get<uint8_t>(); [[maybe_unused]] auto _ : std::views::iota(0u, snddat_cnt))
+        for (auto snddat_cnt = zmReader.Get<std::uint8_t>(); [[maybe_unused]] auto _ : std::views::iota(0u, snddat_cnt))
         {
             m_vcData.emplace_back(zmReader);
         }
     }
 
-    auto ABMPSound10::Load(const std::string_view msDir, ZxJson::JObject_t& rfJObject) -> void
+    auto ABMPSound10::Load(const std::string_view msDir, const ZxJson::JObject_t& rfJObject) -> void
     {
-        if (rfJObject["version"].Get<size_t>() != 10)
+        if (rfJObject.at("version").GetNum() != 10)
         {
             throw std::runtime_error("error version");
         }
 
-        for (auto& info : rfJObject["absnddat_list"].Sure<ZxJson::JArray_t&>())
+        for (auto& info : rfJObject.at("absnddat_list").GetArray())
         {
-            m_vcData.emplace_back(msDir, info.Sure<ZxJson::JObject_t&>());
+            m_vcData.emplace_back(msDir, info.GetObject());
         }
     }
 
     auto ABMPSound10::Save(const std::string_view msSaveDir) const -> ZxJson::JObject_t
     {
-        ZxJson::JObject_t json;
-        json["version"] = 10;
-        json["conut"] = m_vcData.size();
-
-        auto& array = json["absnddat_list"].Sure<ZxJson::JArray_t&>();
+        ZxJson::JArray_t data_array;
         for (const auto& snd_dat : m_vcData)
         {
-            array.emplace_back(snd_dat.Save(msSaveDir));
+            data_array.emplace_back(snd_dat.Save(msSaveDir));
         }
 
-        return json;
+        return ZxJson::JObject_t
+        {
+            { "version", 10 },
+            { "conut", m_vcData.size() },
+            { "absnddat_list", std::move(data_array) }
+        };
     }
 
     auto ABMPSound10::Make(ZxMem& zmWriter) const -> void
@@ -183,10 +185,10 @@ namespace ZQF::RxQLIE
         }
     }
 
-    auto ABMPSound10::SizeBytes() const -> size_t
+    auto ABMPSound10::SizeBytes() const -> std::size_t
     {
-        size_t size = 16; // signature
-        size += sizeof(uint8_t); // snddat_count
+        std::size_t size = 16; // signature
+        size += sizeof(std::uint8_t); // snddat_count
         for (const auto& snd_dat : m_vcData)
         {
             size += snd_dat.SizeBytes();
